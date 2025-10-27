@@ -21,59 +21,39 @@ export default defineNuxtConfig({
   ],
 
   pwa: {
-    registerType: 'autoUpdate',
-    includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
     manifest: {
-      name: 'Task Flow',
-      short_name: 'TaskFlow',
-      description: 'Manage your tasks offline and online!',
-      theme_color: '#3b82f6',
+      name: "Ads App",
+      short_name: "AdsApp",
+      description: "Test Task",
+      start_url: "/",
+      display: "standalone",
+      background_color: "#ffffff",
+      theme_color: "#4f46e5",
       icons: [
-        {
-          src: '/public/logo-64.png',
-          sizes: '64x64',
-          type: 'image/png'
-        },
-        {
-          src: 'public/logo-192.png',
-          sizes: '192x192',
-          type: 'image/png'
-        },
-        {
-          src: '/public/logo-512.png',
-          sizes: '512x512',
-          type: 'image/png'
-        }
+        { src: '/icons/logo-64.png', sizes: '64x64', type: 'image/png' },
+        { src: '/icons/logo-192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/icons/logo-512.png', sizes: '512x512', type: 'image/png' }
       ]
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+      navigateFallback: '/',
       runtimeCaching: [
         {
-          urlPattern: ({ request }) =>
-            ['document', 'script', 'style', 'image', 'font'].includes(request.destination),
+          urlPattern: /^\/.*$/,
           handler: 'CacheFirst',
           options: {
-            cacheName: 'static-resources',
+            cacheName: 'assets-cache',
             expiration: {
               maxEntries: 50,
-              maxAgeSeconds: 60 * 60 * 24 * 30
-            }
-          }
-        },
-        {
-          urlPattern: ({ url }) => url.pathname.startsWith('/data.json'),
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'api-cache',
-            networkTimeoutSeconds: 3,
-            expiration: {
-              maxEntries: 10,
               maxAgeSeconds: 60 * 60 * 24 * 7
             }
           }
         }
       ]
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
     }
   }
 })
