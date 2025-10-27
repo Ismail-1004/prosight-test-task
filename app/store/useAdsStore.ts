@@ -18,6 +18,13 @@ export const useAdsStore = defineStore('ads',() => {
         }
     }
 
+    function updateAd(updatedAd: Ad) {
+        const index = ads.value.findIndex(ad => ad.id === updatedAd.id)
+        if (index !== -1) {
+          ads.value[index] = { ...updatedAd }
+        }
+      }
+
     const filteredAds = computed(() => {
         let list = [...ads.value]
 
@@ -45,5 +52,5 @@ export const useAdsStore = defineStore('ads',() => {
         return list
     })
 
-    return { ads, filteredAds, query, statusFilter, sortOrder, loadAds }
+    return { ads, filteredAds, query, statusFilter, sortOrder, loadAds, updateAd }
 })
