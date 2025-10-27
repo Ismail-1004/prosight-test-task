@@ -30,12 +30,17 @@ export default defineNuxtConfig({
       theme_color: '#3b82f6',
       icons: [
         {
-          src: '/pwa-192x192.png',
+          src: '/public/logo-64.png',
+          sizes: '64x64',
+          type: 'image/png'
+        },
+        {
+          src: 'public/logo-192.png',
           sizes: '192x192',
           type: 'image/png'
         },
         {
-          src: '/pwa-512x512.png',
+          src: '/public/logo-512.png',
           sizes: '512x512',
           type: 'image/png'
         }
