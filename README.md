@@ -3,7 +3,7 @@
 Приложение для управления задачами.
 
 ### Десктоп
-![Desktop view](/images/desktop.png)
+![Desktop view](public/images/desktop.png)
 
 ### Мобильный
-![Mobile view](/images/mobile.png)
+![Mobile view](public/images/mobile.png)
