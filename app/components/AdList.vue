@@ -26,12 +26,30 @@ function handleUpdate(updatedAd: Ad) {
 
 <template>
     <div>
-        <ul class="list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" v-if="!store.loading">
-            <ad-card v-for="ad in store.filteredAds" :key="ad.id" :ad="ad" @open-modal="openModal" />
-        </ul>
-
-        <loader v-else />
-
-        <AdModal :ad="selectedAd" :show="showModal" @close="closeModal" @update="handleUpdate" />
+      <loader v-if="store.loading" />
+  
+      <ul
+        v-else-if="store.filteredAds.length"
+        class="list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
+        <ad-card
+          v-for="ad in store.filteredAds"
+          :key="ad.id"
+          :ad="ad"
+          @open-modal="openModal"
+        />
+      </ul>
+  
+      <p v-else class="text-gray-500 text-center">
+        Tasks not found
+      </p>
+  
+      <AdModal
+        :ad="selectedAd"
+        :show="showModal"
+        @close="closeModal"
+        @update="handleUpdate"
+      />
     </div>
-</template>
+  </template>
+  

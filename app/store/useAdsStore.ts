@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import localforage from 'localforage'
 import type { Ad } from "~/types/ad"
 import { generateFakeAd } from '~/utils/generateAd'
 
@@ -10,28 +11,52 @@ export const useAdsStore = defineStore('ads', () => {
     const statusFilter = ref<'all' | 'active' | 'pending' | 'completed'>('all')
     const sortOrder = ref<'asc' | 'desc'>('asc')
 
-    async function loadAds() {
-        try {
-            loading.value = true
+    const STORAGE_KEY = 'ads_data'
 
-            const res = await fetch('/data.json')
-            ads.value = await res.json()
-        
-            loading.value = false
-        } catch (e) {
-            console.log('Failed to load ads', e);
-            throw e
-        }
+    localforage.config({
+        name: 'task-flow-app',
+        storeName: 'ads',
+        description: 'Local storage for ads/tasks'
+    })
+
+    async function saveToLocal() {
+        const plainAds = JSON.parse(JSON.stringify(ads.value))
+        await localforage.setItem(STORAGE_KEY, plainAds)
     }
 
-    function updateAd(updatedAd: Ad) {
+    async function loadAds() {
+        loading.value = true
+        const storedAds = await localforage.getItem<Ad[]>(STORAGE_KEY)
+
+        if (!navigator.onLine) {
+            ads.value = storedAds || []
+            loading.value = false
+            return
+        }
+
+        if (storedAds && storedAds.length) {
+            ads.value = storedAds
+        } else {
+            try {
+                const res = await fetch('/data.json')
+                ads.value = await res.json()
+            } catch (e) {
+                console.log('Failed to load ads', e)
+            }
+            await saveToLocal()
+        }
+        loading.value = false
+    }
+
+    async function updateAd(updatedAd: Ad) {
         const index = ads.value.findIndex(ad => ad.id === updatedAd.id)
         if (index !== -1) {
-            ads.value[index] = { ...updatedAd }
+            ads.value.splice(index, 1, { ...updatedAd })
+            await saveToLocal()
         }
     }
 
-    async function generateAds (count: number) {
+    async function generateAds(count: number) {
         loading.value = true
         await new Promise(resolve => setTimeout(resolve, 1000))
 
@@ -40,12 +65,13 @@ export const useAdsStore = defineStore('ads', () => {
             let ad: Ad
             do {
                 ad = generateFakeAd()
-            } while (ads.value.some(a => a.id === ad.id)) 
+            } while (ads.value.some(a => a.id === ad.id))
 
             newAds.push(ad)
         }
 
         ads.value.unshift(...newAds)
+        await saveToLocal()
         loading.value = false
     }
 

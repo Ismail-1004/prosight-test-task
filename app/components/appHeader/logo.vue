@@ -4,6 +4,6 @@
       name="material-symbols-light:check-circle-outline"
       class="text-green-500 text-[28px]"
     />
-    <span class="font-bold text-[22px]">Task Flow</span>
+    <span class="hidden md:inline font-bold text-[22px]">Task Flow</span>
   </NuxtLink>
 </template>
